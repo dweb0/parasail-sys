@@ -8,6 +8,11 @@ use std::fs::copy;
 use std::path::Path;
 
 fn main() {
+    
+    panic!(
+        "THIS FORK IS NOT WORKING AS INTENDED. UNEXPECTED BEHAVIOR IN ALIGNMENT FUNCTIONS. DO NOT USE."
+    );
+
     println!("cargo:rerun-if-changed=parasail_c/CMakeLists.txt");
 
     let out_dir = env::var("OUT_DIR").unwrap();
