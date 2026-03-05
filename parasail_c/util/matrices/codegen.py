@@ -10,7 +10,7 @@ import os
 header = """/**
  * @file
  *
- * @author jeff.daily@pnnl.gov
+ * @author jeffrey.daily@gmail.com
  *
  * Copyright (c) 2015 Battelle Memorial Institute.
  *
@@ -60,7 +60,7 @@ def generate_mapper(name, line):
     text = """/**
  * @file
  *
- * @author jeff.daily@pnnl.gov
+ * @author jeffrey.daily@gmail.com
  *
  * Copyright (c) 2015 Battelle Memorial Institute.
  */
@@ -153,10 +153,15 @@ static const parasail_matrix_t parasail_%s = {
     %d,
     %d,
     %d,
-    0
+    NULL,
+    PARASAIL_MATRIX_TYPE_SQUARE,
+    %d,
+    "%s",
+    NULL
 };
 
-""" % (filename_lower, filename_lower, filename_lower, base, count, biggest, smallest))
+""" % (filename_lower, filename_lower, filename_lower, base, count, biggest, smallest, count,
+    "".join(the_lines[0].split())))
     writer.write(footer % filename)
     writer.write("\n")
     writer.close()
@@ -176,7 +181,7 @@ static const parasail_matrix_t parasail_%s = {
 text = """/**
  * @file
  *
- * @author jeff.daily@pnnl.gov
+ * @author jeffrey.daily@gmail.com
  *
  * Copyright (c) 2015 Battelle Memorial Institute.
  */

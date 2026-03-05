@@ -1,7 +1,7 @@
 /**
  * @file
  *
- * @author jeff.daily@pnnl.gov
+ * @author jeffrey.daily@gmail.com
  *
  * Copyright (c) 2015 Battelle Memorial Institute.
  */
@@ -14,9 +14,14 @@
 extern "C" {
 #endif
 
-extern PARASAIL_API int parasail_can_use_avx2();
-extern PARASAIL_API int parasail_can_use_sse41();
-extern PARASAIL_API int parasail_can_use_sse2();
+extern int parasail_can_use_avx512vbmi(void);
+extern int parasail_can_use_avx512bw(void);
+extern int parasail_can_use_avx512f(void);
+extern int parasail_can_use_avx2(void);
+extern int parasail_can_use_sse41(void);
+extern int parasail_can_use_sse2(void);
+extern int parasail_can_use_altivec(void);
+extern int parasail_can_use_neon(void);
 
 #ifdef __cplusplus
 }

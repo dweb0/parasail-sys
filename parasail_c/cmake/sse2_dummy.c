@@ -1,7 +1,7 @@
 /**
  * @file
  *
- * @author jeff.daily@pnnl.gov
+ * @author jeffrey.daily@gmail.com
  *
  * Copyright (c) 2015 Battelle Memorial Institute.
  */
@@ -11,13 +11,17 @@
 #ifdef PARASAIL_ROWCOL
 #define ENAME parasail_sse2_dummy_rowcol
 #else
+#ifdef PARASAIL_TRACE
+#define ENAME parasail_sse2_dummy_trace
+#else
 #define ENAME parasail_sse2_dummy
+#endif
 #endif
 #endif
 
 extern int ENAME(void);
 
-int ENAME()
+int ENAME(void)
 {
     return 0;
 }

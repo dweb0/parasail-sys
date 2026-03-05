@@ -1,7 +1,7 @@
 /**
  * @file
  *
- * @author jeff.daily@pnnl.gov
+ * @author jeffrey.daily@gmail.com
  *
  * Copyright (c) 2015 Battelle Memorial Institute.
  */
@@ -15,7 +15,6 @@
 #include "parasail/memory.h"
 #include "parasail/internal_avx.h"
 
-#define NEG_INF INT8_MIN
 
 #if HAVE_AVX2_MM256_INSERT_EPI8
 #define _mm256_insert_epi8_rpl _mm256_insert_epi8
@@ -38,6 +37,8 @@ static inline int8_t _mm256_extract_epi8_rpl(__m256i a, int imm) {
 }
 #endif
 
+#define _mm256_cmplt_epi8_rpl(a,b) _mm256_cmpgt_epi8(b,a)
+
 #define _mm256_srli_si256_rpl(a,imm) _mm256_or_si256(_mm256_slli_si256(_mm256_permute2x128_si256(a, a, _MM_SHUFFLE(3,0,0,1)), 16-imm), _mm256_srli_si256(a, imm))
 
 #define _mm256_slli_si256_rpl(a,imm) _mm256_alignr_epi8(a, _mm256_permute2x128_si256(a, a, _MM_SHUFFLE(0,0,3,0)), 16-imm)
@@ -46,107 +47,107 @@ static inline int8_t _mm256_extract_epi8_rpl(__m256i a, int imm) {
 #ifdef PARASAIL_TABLE
 static inline void arr_store_si256(
         int *array,
-        __m256i vWscore,
+        __m256i vWH,
         int32_t i,
         int32_t s1Len,
         int32_t j,
         int32_t s2Len)
 {
     if (0 <= i+0 && i+0 < s1Len && 0 <= j-0 && j-0 < s2Len) {
-        array[(i+0)*s2Len + (j-0)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 31);
+        array[1LL*(i+0)*s2Len + (j-0)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 31);
     }
     if (0 <= i+1 && i+1 < s1Len && 0 <= j-1 && j-1 < s2Len) {
-        array[(i+1)*s2Len + (j-1)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 30);
+        array[1LL*(i+1)*s2Len + (j-1)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 30);
     }
     if (0 <= i+2 && i+2 < s1Len && 0 <= j-2 && j-2 < s2Len) {
-        array[(i+2)*s2Len + (j-2)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 29);
+        array[1LL*(i+2)*s2Len + (j-2)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 29);
     }
     if (0 <= i+3 && i+3 < s1Len && 0 <= j-3 && j-3 < s2Len) {
-        array[(i+3)*s2Len + (j-3)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 28);
+        array[1LL*(i+3)*s2Len + (j-3)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 28);
     }
     if (0 <= i+4 && i+4 < s1Len && 0 <= j-4 && j-4 < s2Len) {
-        array[(i+4)*s2Len + (j-4)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 27);
+        array[1LL*(i+4)*s2Len + (j-4)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 27);
     }
     if (0 <= i+5 && i+5 < s1Len && 0 <= j-5 && j-5 < s2Len) {
-        array[(i+5)*s2Len + (j-5)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 26);
+        array[1LL*(i+5)*s2Len + (j-5)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 26);
     }
     if (0 <= i+6 && i+6 < s1Len && 0 <= j-6 && j-6 < s2Len) {
-        array[(i+6)*s2Len + (j-6)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 25);
+        array[1LL*(i+6)*s2Len + (j-6)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 25);
     }
     if (0 <= i+7 && i+7 < s1Len && 0 <= j-7 && j-7 < s2Len) {
-        array[(i+7)*s2Len + (j-7)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 24);
+        array[1LL*(i+7)*s2Len + (j-7)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 24);
     }
     if (0 <= i+8 && i+8 < s1Len && 0 <= j-8 && j-8 < s2Len) {
-        array[(i+8)*s2Len + (j-8)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 23);
+        array[1LL*(i+8)*s2Len + (j-8)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 23);
     }
     if (0 <= i+9 && i+9 < s1Len && 0 <= j-9 && j-9 < s2Len) {
-        array[(i+9)*s2Len + (j-9)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 22);
+        array[1LL*(i+9)*s2Len + (j-9)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 22);
     }
     if (0 <= i+10 && i+10 < s1Len && 0 <= j-10 && j-10 < s2Len) {
-        array[(i+10)*s2Len + (j-10)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 21);
+        array[1LL*(i+10)*s2Len + (j-10)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 21);
     }
     if (0 <= i+11 && i+11 < s1Len && 0 <= j-11 && j-11 < s2Len) {
-        array[(i+11)*s2Len + (j-11)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 20);
+        array[1LL*(i+11)*s2Len + (j-11)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 20);
     }
     if (0 <= i+12 && i+12 < s1Len && 0 <= j-12 && j-12 < s2Len) {
-        array[(i+12)*s2Len + (j-12)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 19);
+        array[1LL*(i+12)*s2Len + (j-12)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 19);
     }
     if (0 <= i+13 && i+13 < s1Len && 0 <= j-13 && j-13 < s2Len) {
-        array[(i+13)*s2Len + (j-13)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 18);
+        array[1LL*(i+13)*s2Len + (j-13)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 18);
     }
     if (0 <= i+14 && i+14 < s1Len && 0 <= j-14 && j-14 < s2Len) {
-        array[(i+14)*s2Len + (j-14)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 17);
+        array[1LL*(i+14)*s2Len + (j-14)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 17);
     }
     if (0 <= i+15 && i+15 < s1Len && 0 <= j-15 && j-15 < s2Len) {
-        array[(i+15)*s2Len + (j-15)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 16);
+        array[1LL*(i+15)*s2Len + (j-15)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 16);
     }
     if (0 <= i+16 && i+16 < s1Len && 0 <= j-16 && j-16 < s2Len) {
-        array[(i+16)*s2Len + (j-16)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 15);
+        array[1LL*(i+16)*s2Len + (j-16)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 15);
     }
     if (0 <= i+17 && i+17 < s1Len && 0 <= j-17 && j-17 < s2Len) {
-        array[(i+17)*s2Len + (j-17)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 14);
+        array[1LL*(i+17)*s2Len + (j-17)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 14);
     }
     if (0 <= i+18 && i+18 < s1Len && 0 <= j-18 && j-18 < s2Len) {
-        array[(i+18)*s2Len + (j-18)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 13);
+        array[1LL*(i+18)*s2Len + (j-18)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 13);
     }
     if (0 <= i+19 && i+19 < s1Len && 0 <= j-19 && j-19 < s2Len) {
-        array[(i+19)*s2Len + (j-19)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 12);
+        array[1LL*(i+19)*s2Len + (j-19)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 12);
     }
     if (0 <= i+20 && i+20 < s1Len && 0 <= j-20 && j-20 < s2Len) {
-        array[(i+20)*s2Len + (j-20)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 11);
+        array[1LL*(i+20)*s2Len + (j-20)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 11);
     }
     if (0 <= i+21 && i+21 < s1Len && 0 <= j-21 && j-21 < s2Len) {
-        array[(i+21)*s2Len + (j-21)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 10);
+        array[1LL*(i+21)*s2Len + (j-21)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 10);
     }
     if (0 <= i+22 && i+22 < s1Len && 0 <= j-22 && j-22 < s2Len) {
-        array[(i+22)*s2Len + (j-22)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 9);
+        array[1LL*(i+22)*s2Len + (j-22)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 9);
     }
     if (0 <= i+23 && i+23 < s1Len && 0 <= j-23 && j-23 < s2Len) {
-        array[(i+23)*s2Len + (j-23)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 8);
+        array[1LL*(i+23)*s2Len + (j-23)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 8);
     }
     if (0 <= i+24 && i+24 < s1Len && 0 <= j-24 && j-24 < s2Len) {
-        array[(i+24)*s2Len + (j-24)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 7);
+        array[1LL*(i+24)*s2Len + (j-24)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 7);
     }
     if (0 <= i+25 && i+25 < s1Len && 0 <= j-25 && j-25 < s2Len) {
-        array[(i+25)*s2Len + (j-25)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 6);
+        array[1LL*(i+25)*s2Len + (j-25)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 6);
     }
     if (0 <= i+26 && i+26 < s1Len && 0 <= j-26 && j-26 < s2Len) {
-        array[(i+26)*s2Len + (j-26)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 5);
+        array[1LL*(i+26)*s2Len + (j-26)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 5);
     }
     if (0 <= i+27 && i+27 < s1Len && 0 <= j-27 && j-27 < s2Len) {
-        array[(i+27)*s2Len + (j-27)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 4);
+        array[1LL*(i+27)*s2Len + (j-27)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 4);
     }
     if (0 <= i+28 && i+28 < s1Len && 0 <= j-28 && j-28 < s2Len) {
-        array[(i+28)*s2Len + (j-28)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 3);
+        array[1LL*(i+28)*s2Len + (j-28)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 3);
     }
     if (0 <= i+29 && i+29 < s1Len && 0 <= j-29 && j-29 < s2Len) {
-        array[(i+29)*s2Len + (j-29)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 2);
+        array[1LL*(i+29)*s2Len + (j-29)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 2);
     }
     if (0 <= i+30 && i+30 < s1Len && 0 <= j-30 && j-30 < s2Len) {
-        array[(i+30)*s2Len + (j-30)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 1);
+        array[1LL*(i+30)*s2Len + (j-30)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 1);
     }
     if (0 <= i+31 && i+31 < s1Len && 0 <= j-31 && j-31 < s2Len) {
-        array[(i+31)*s2Len + (j-31)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 0);
+        array[1LL*(i+31)*s2Len + (j-31)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 0);
     }
 }
 #endif
@@ -155,203 +156,203 @@ static inline void arr_store_si256(
 static inline void arr_store_rowcol(
         int *row,
         int *col,
-        __m256i vWscore,
+        __m256i vWH,
         int32_t i,
         int32_t s1Len,
         int32_t j,
         int32_t s2Len)
 {
     if (i+0 == s1Len-1 && 0 <= j-0 && j-0 < s2Len) {
-        row[j-0] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 31);
+        row[j-0] = (int8_t)_mm256_extract_epi8_rpl(vWH, 31);
     }
     if (j-0 == s2Len-1 && 0 <= i+0 && i+0 < s1Len) {
-        col[(i+0)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 31);
+        col[(i+0)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 31);
     }
     if (i+1 == s1Len-1 && 0 <= j-1 && j-1 < s2Len) {
-        row[j-1] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 30);
+        row[j-1] = (int8_t)_mm256_extract_epi8_rpl(vWH, 30);
     }
     if (j-1 == s2Len-1 && 0 <= i+1 && i+1 < s1Len) {
-        col[(i+1)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 30);
+        col[(i+1)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 30);
     }
     if (i+2 == s1Len-1 && 0 <= j-2 && j-2 < s2Len) {
-        row[j-2] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 29);
+        row[j-2] = (int8_t)_mm256_extract_epi8_rpl(vWH, 29);
     }
     if (j-2 == s2Len-1 && 0 <= i+2 && i+2 < s1Len) {
-        col[(i+2)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 29);
+        col[(i+2)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 29);
     }
     if (i+3 == s1Len-1 && 0 <= j-3 && j-3 < s2Len) {
-        row[j-3] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 28);
+        row[j-3] = (int8_t)_mm256_extract_epi8_rpl(vWH, 28);
     }
     if (j-3 == s2Len-1 && 0 <= i+3 && i+3 < s1Len) {
-        col[(i+3)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 28);
+        col[(i+3)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 28);
     }
     if (i+4 == s1Len-1 && 0 <= j-4 && j-4 < s2Len) {
-        row[j-4] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 27);
+        row[j-4] = (int8_t)_mm256_extract_epi8_rpl(vWH, 27);
     }
     if (j-4 == s2Len-1 && 0 <= i+4 && i+4 < s1Len) {
-        col[(i+4)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 27);
+        col[(i+4)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 27);
     }
     if (i+5 == s1Len-1 && 0 <= j-5 && j-5 < s2Len) {
-        row[j-5] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 26);
+        row[j-5] = (int8_t)_mm256_extract_epi8_rpl(vWH, 26);
     }
     if (j-5 == s2Len-1 && 0 <= i+5 && i+5 < s1Len) {
-        col[(i+5)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 26);
+        col[(i+5)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 26);
     }
     if (i+6 == s1Len-1 && 0 <= j-6 && j-6 < s2Len) {
-        row[j-6] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 25);
+        row[j-6] = (int8_t)_mm256_extract_epi8_rpl(vWH, 25);
     }
     if (j-6 == s2Len-1 && 0 <= i+6 && i+6 < s1Len) {
-        col[(i+6)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 25);
+        col[(i+6)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 25);
     }
     if (i+7 == s1Len-1 && 0 <= j-7 && j-7 < s2Len) {
-        row[j-7] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 24);
+        row[j-7] = (int8_t)_mm256_extract_epi8_rpl(vWH, 24);
     }
     if (j-7 == s2Len-1 && 0 <= i+7 && i+7 < s1Len) {
-        col[(i+7)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 24);
+        col[(i+7)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 24);
     }
     if (i+8 == s1Len-1 && 0 <= j-8 && j-8 < s2Len) {
-        row[j-8] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 23);
+        row[j-8] = (int8_t)_mm256_extract_epi8_rpl(vWH, 23);
     }
     if (j-8 == s2Len-1 && 0 <= i+8 && i+8 < s1Len) {
-        col[(i+8)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 23);
+        col[(i+8)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 23);
     }
     if (i+9 == s1Len-1 && 0 <= j-9 && j-9 < s2Len) {
-        row[j-9] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 22);
+        row[j-9] = (int8_t)_mm256_extract_epi8_rpl(vWH, 22);
     }
     if (j-9 == s2Len-1 && 0 <= i+9 && i+9 < s1Len) {
-        col[(i+9)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 22);
+        col[(i+9)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 22);
     }
     if (i+10 == s1Len-1 && 0 <= j-10 && j-10 < s2Len) {
-        row[j-10] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 21);
+        row[j-10] = (int8_t)_mm256_extract_epi8_rpl(vWH, 21);
     }
     if (j-10 == s2Len-1 && 0 <= i+10 && i+10 < s1Len) {
-        col[(i+10)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 21);
+        col[(i+10)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 21);
     }
     if (i+11 == s1Len-1 && 0 <= j-11 && j-11 < s2Len) {
-        row[j-11] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 20);
+        row[j-11] = (int8_t)_mm256_extract_epi8_rpl(vWH, 20);
     }
     if (j-11 == s2Len-1 && 0 <= i+11 && i+11 < s1Len) {
-        col[(i+11)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 20);
+        col[(i+11)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 20);
     }
     if (i+12 == s1Len-1 && 0 <= j-12 && j-12 < s2Len) {
-        row[j-12] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 19);
+        row[j-12] = (int8_t)_mm256_extract_epi8_rpl(vWH, 19);
     }
     if (j-12 == s2Len-1 && 0 <= i+12 && i+12 < s1Len) {
-        col[(i+12)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 19);
+        col[(i+12)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 19);
     }
     if (i+13 == s1Len-1 && 0 <= j-13 && j-13 < s2Len) {
-        row[j-13] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 18);
+        row[j-13] = (int8_t)_mm256_extract_epi8_rpl(vWH, 18);
     }
     if (j-13 == s2Len-1 && 0 <= i+13 && i+13 < s1Len) {
-        col[(i+13)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 18);
+        col[(i+13)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 18);
     }
     if (i+14 == s1Len-1 && 0 <= j-14 && j-14 < s2Len) {
-        row[j-14] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 17);
+        row[j-14] = (int8_t)_mm256_extract_epi8_rpl(vWH, 17);
     }
     if (j-14 == s2Len-1 && 0 <= i+14 && i+14 < s1Len) {
-        col[(i+14)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 17);
+        col[(i+14)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 17);
     }
     if (i+15 == s1Len-1 && 0 <= j-15 && j-15 < s2Len) {
-        row[j-15] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 16);
+        row[j-15] = (int8_t)_mm256_extract_epi8_rpl(vWH, 16);
     }
     if (j-15 == s2Len-1 && 0 <= i+15 && i+15 < s1Len) {
-        col[(i+15)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 16);
+        col[(i+15)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 16);
     }
     if (i+16 == s1Len-1 && 0 <= j-16 && j-16 < s2Len) {
-        row[j-16] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 15);
+        row[j-16] = (int8_t)_mm256_extract_epi8_rpl(vWH, 15);
     }
     if (j-16 == s2Len-1 && 0 <= i+16 && i+16 < s1Len) {
-        col[(i+16)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 15);
+        col[(i+16)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 15);
     }
     if (i+17 == s1Len-1 && 0 <= j-17 && j-17 < s2Len) {
-        row[j-17] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 14);
+        row[j-17] = (int8_t)_mm256_extract_epi8_rpl(vWH, 14);
     }
     if (j-17 == s2Len-1 && 0 <= i+17 && i+17 < s1Len) {
-        col[(i+17)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 14);
+        col[(i+17)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 14);
     }
     if (i+18 == s1Len-1 && 0 <= j-18 && j-18 < s2Len) {
-        row[j-18] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 13);
+        row[j-18] = (int8_t)_mm256_extract_epi8_rpl(vWH, 13);
     }
     if (j-18 == s2Len-1 && 0 <= i+18 && i+18 < s1Len) {
-        col[(i+18)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 13);
+        col[(i+18)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 13);
     }
     if (i+19 == s1Len-1 && 0 <= j-19 && j-19 < s2Len) {
-        row[j-19] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 12);
+        row[j-19] = (int8_t)_mm256_extract_epi8_rpl(vWH, 12);
     }
     if (j-19 == s2Len-1 && 0 <= i+19 && i+19 < s1Len) {
-        col[(i+19)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 12);
+        col[(i+19)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 12);
     }
     if (i+20 == s1Len-1 && 0 <= j-20 && j-20 < s2Len) {
-        row[j-20] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 11);
+        row[j-20] = (int8_t)_mm256_extract_epi8_rpl(vWH, 11);
     }
     if (j-20 == s2Len-1 && 0 <= i+20 && i+20 < s1Len) {
-        col[(i+20)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 11);
+        col[(i+20)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 11);
     }
     if (i+21 == s1Len-1 && 0 <= j-21 && j-21 < s2Len) {
-        row[j-21] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 10);
+        row[j-21] = (int8_t)_mm256_extract_epi8_rpl(vWH, 10);
     }
     if (j-21 == s2Len-1 && 0 <= i+21 && i+21 < s1Len) {
-        col[(i+21)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 10);
+        col[(i+21)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 10);
     }
     if (i+22 == s1Len-1 && 0 <= j-22 && j-22 < s2Len) {
-        row[j-22] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 9);
+        row[j-22] = (int8_t)_mm256_extract_epi8_rpl(vWH, 9);
     }
     if (j-22 == s2Len-1 && 0 <= i+22 && i+22 < s1Len) {
-        col[(i+22)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 9);
+        col[(i+22)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 9);
     }
     if (i+23 == s1Len-1 && 0 <= j-23 && j-23 < s2Len) {
-        row[j-23] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 8);
+        row[j-23] = (int8_t)_mm256_extract_epi8_rpl(vWH, 8);
     }
     if (j-23 == s2Len-1 && 0 <= i+23 && i+23 < s1Len) {
-        col[(i+23)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 8);
+        col[(i+23)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 8);
     }
     if (i+24 == s1Len-1 && 0 <= j-24 && j-24 < s2Len) {
-        row[j-24] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 7);
+        row[j-24] = (int8_t)_mm256_extract_epi8_rpl(vWH, 7);
     }
     if (j-24 == s2Len-1 && 0 <= i+24 && i+24 < s1Len) {
-        col[(i+24)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 7);
+        col[(i+24)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 7);
     }
     if (i+25 == s1Len-1 && 0 <= j-25 && j-25 < s2Len) {
-        row[j-25] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 6);
+        row[j-25] = (int8_t)_mm256_extract_epi8_rpl(vWH, 6);
     }
     if (j-25 == s2Len-1 && 0 <= i+25 && i+25 < s1Len) {
-        col[(i+25)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 6);
+        col[(i+25)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 6);
     }
     if (i+26 == s1Len-1 && 0 <= j-26 && j-26 < s2Len) {
-        row[j-26] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 5);
+        row[j-26] = (int8_t)_mm256_extract_epi8_rpl(vWH, 5);
     }
     if (j-26 == s2Len-1 && 0 <= i+26 && i+26 < s1Len) {
-        col[(i+26)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 5);
+        col[(i+26)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 5);
     }
     if (i+27 == s1Len-1 && 0 <= j-27 && j-27 < s2Len) {
-        row[j-27] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 4);
+        row[j-27] = (int8_t)_mm256_extract_epi8_rpl(vWH, 4);
     }
     if (j-27 == s2Len-1 && 0 <= i+27 && i+27 < s1Len) {
-        col[(i+27)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 4);
+        col[(i+27)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 4);
     }
     if (i+28 == s1Len-1 && 0 <= j-28 && j-28 < s2Len) {
-        row[j-28] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 3);
+        row[j-28] = (int8_t)_mm256_extract_epi8_rpl(vWH, 3);
     }
     if (j-28 == s2Len-1 && 0 <= i+28 && i+28 < s1Len) {
-        col[(i+28)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 3);
+        col[(i+28)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 3);
     }
     if (i+29 == s1Len-1 && 0 <= j-29 && j-29 < s2Len) {
-        row[j-29] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 2);
+        row[j-29] = (int8_t)_mm256_extract_epi8_rpl(vWH, 2);
     }
     if (j-29 == s2Len-1 && 0 <= i+29 && i+29 < s1Len) {
-        col[(i+29)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 2);
+        col[(i+29)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 2);
     }
     if (i+30 == s1Len-1 && 0 <= j-30 && j-30 < s2Len) {
-        row[j-30] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 1);
+        row[j-30] = (int8_t)_mm256_extract_epi8_rpl(vWH, 1);
     }
     if (j-30 == s2Len-1 && 0 <= i+30 && i+30 < s1Len) {
-        col[(i+30)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 1);
+        col[(i+30)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 1);
     }
     if (i+31 == s1Len-1 && 0 <= j-31 && j-31 < s2Len) {
-        row[j-31] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 0);
+        row[j-31] = (int8_t)_mm256_extract_epi8_rpl(vWH, 0);
     }
     if (j-31 == s2Len-1 && 0 <= i+31 && i+31 < s1Len) {
-        col[(i+31)] = (int8_t)_mm256_extract_epi8_rpl(vWscore, 0);
+        col[(i+31)] = (int8_t)_mm256_extract_epi8_rpl(vWH, 0);
     }
 }
 #endif
@@ -367,51 +368,96 @@ static inline void arr_store_rowcol(
 #endif
 
 parasail_result_t* FNAME(
-        const char * const restrict _s1, const int s1Len,
+        const char * const restrict _s1, const int _s1Len,
         const char * const restrict _s2, const int s2Len,
         const int open, const int gap, const parasail_matrix_t *matrix)
 {
-    const int32_t N = 32; /* number of values in vector */
-    const int32_t PAD = N-1;
-    const int32_t PAD2 = PAD*2;
-    const int32_t s1Len_PAD = s1Len+PAD;
-    const int32_t s2Len_PAD = s2Len+PAD;
-    int8_t * const restrict s1 = parasail_memalign_int8_t(32, s1Len+PAD);
-    int8_t * const restrict s2B= parasail_memalign_int8_t(32, s2Len+PAD2);
-    int8_t * const restrict _tbl_pr = parasail_memalign_int8_t(32, s2Len+PAD2);
-    int8_t * const restrict _del_pr = parasail_memalign_int8_t(32, s2Len+PAD2);
-    int8_t * const restrict s2 = s2B+PAD; /* will allow later for negative indices */
-    int8_t * const restrict tbl_pr = _tbl_pr+PAD;
-    int8_t * const restrict del_pr = _del_pr+PAD;
-#ifdef PARASAIL_TABLE
-    parasail_result_t *result = parasail_result_new_table1(s1Len, s2Len);
-#else
-#ifdef PARASAIL_ROWCOL
-    parasail_result_t *result = parasail_result_new_rowcol1(s1Len, s2Len);
-#else
-    parasail_result_t *result = parasail_result_new();
-#endif
-#endif
+    /* declare local variables */
+    int32_t N = 0;
+    int32_t PAD = 0;
+    int32_t PAD2 = 0;
+    int32_t s1Len = 0;
+    int32_t s1Len_PAD = 0;
+    int32_t s2Len_PAD = 0;
+    int8_t * restrict s1 = NULL;
+    int8_t * restrict s2B = NULL;
+    int8_t * restrict _H_pr = NULL;
+    int8_t * restrict _F_pr = NULL;
+    int8_t * restrict s2 = NULL;
+    int8_t * restrict H_pr = NULL;
+    int8_t * restrict F_pr = NULL;
+    parasail_result_t *result = NULL;
     int32_t i = 0;
     int32_t j = 0;
     int32_t end_query = 0;
     int32_t end_ref = 0;
-    int8_t score = NEG_INF;
-    __m256i vNegInf = _mm256_set1_epi8(NEG_INF);
-    __m256i vOpen = _mm256_set1_epi8(open);
-    __m256i vGap  = _mm256_set1_epi8(gap);
-    __m256i vOne = _mm256_set1_epi8(1);
-    __m256i vN = _mm256_set1_epi8(N);
-    __m256i vGapN = _mm256_set1_epi8(gap*N);
-    __m256i vNegOne = _mm256_set1_epi8(-1);
-    __m256i vI = _mm256_set_epi8(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31);
-    __m256i vJreset = _mm256_set_epi8(0,-1,-2,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-17,-18,-19,-20,-21,-22,-23,-24,-25,-26,-27,-28,-29,-30,-31);
-    __m256i vMax = vNegInf;
-    __m256i vILimit = _mm256_set1_epi8(s1Len);
-    __m256i vILimit1 = _mm256_subs_epi8(vILimit, vOne);
-    __m256i vJLimit = _mm256_set1_epi8(s2Len);
-    __m256i vJLimit1 = _mm256_subs_epi8(vJLimit, vOne);
-    __m256i vIBoundary = _mm256_set_epi8(
+    int8_t NEG_LIMIT = 0;
+    int8_t POS_LIMIT = 0;
+    int8_t score = 0;
+    __m256i vNegLimit;
+    __m256i vPosLimit;
+    __m256i vSaturationCheckMin;
+    __m256i vSaturationCheckMax;
+    __m256i vNegInf;
+    __m256i vOpen;
+    __m256i vGap;
+    __m256i vOne;
+    __m256i vN;
+    __m256i vGapN;
+    __m256i vNegOne;
+    __m256i vI;
+    __m256i vJreset;
+    __m256i vMax;
+    __m256i vILimit;
+    __m256i vILimit1;
+    __m256i vJLimit;
+    __m256i vJLimit1;
+    __m256i vIBoundary;
+
+    /* validate inputs */
+    PARASAIL_CHECK_NULL(_s2);
+    PARASAIL_CHECK_GT0(s2Len);
+    PARASAIL_CHECK_GE0(open);
+    PARASAIL_CHECK_GE0(gap);
+    PARASAIL_CHECK_NULL(matrix);
+    if (matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) {
+        PARASAIL_CHECK_NULL(_s1);
+        PARASAIL_CHECK_GT0(_s1Len);
+    }
+
+    /* initialize stack variables */
+    N = 32; /* number of values in vector */
+    PAD = N-1;
+    PAD2 = PAD*2;
+    s1Len = matrix->type == PARASAIL_MATRIX_TYPE_SQUARE ? _s1Len : matrix->length;
+    s1Len_PAD = s1Len+PAD;
+    s2Len_PAD = s2Len+PAD;
+    i = 0;
+    j = 0;
+    end_query = s1Len-1;
+    end_ref = s2Len-1;
+    NEG_LIMIT = (-open < matrix->min ? INT8_MIN + open : INT8_MIN - matrix->min) + 1;
+    POS_LIMIT = INT8_MAX - matrix->max - 1;
+    score = NEG_LIMIT;
+    vNegLimit = _mm256_set1_epi8(NEG_LIMIT);
+    vPosLimit = _mm256_set1_epi8(POS_LIMIT);
+    vSaturationCheckMin = vPosLimit;
+    vSaturationCheckMax = vNegLimit;
+    vNegInf = _mm256_set1_epi8(NEG_LIMIT);
+    vOpen = _mm256_set1_epi8(open);
+    vGap  = _mm256_set1_epi8(gap);
+    vOne = _mm256_set1_epi8(1);
+    vN = _mm256_set1_epi8(N);
+    vGapN = _mm256_set1_epi8(gap*N);
+    vNegOne = _mm256_set1_epi8(-1);
+    vI = _mm256_set_epi8(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31);
+    vJreset = _mm256_set_epi8(0,-1,-2,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-17,-18,-19,-20,-21,-22,-23,-24,-25,-26,-27,-28,-29,-30,-31);
+    vMax = vNegInf;
+    vILimit = _mm256_set1_epi8(s1Len);
+    vILimit1 = _mm256_subs_epi8(vILimit, vOne);
+    vJLimit = _mm256_set1_epi8(s2Len);
+    vJLimit1 = _mm256_subs_epi8(vJLimit, vOne);
+    vIBoundary = _mm256_set_epi8(
             -open-0*gap,
             -open-1*gap,
             -open-2*gap,
@@ -443,20 +489,54 @@ parasail_result_t* FNAME(
             -open-28*gap,
             -open-29*gap,
             -open-30*gap,
-            -open-31*gap
-            );
-    __m256i vNegLimit = _mm256_set1_epi8(INT8_MIN);
-    __m256i vPosLimit = _mm256_set1_epi8(INT8_MAX);
-    __m256i vSaturationCheckMin = vPosLimit;
-    __m256i vSaturationCheckMax = vNegLimit;
+            -open-31*gap);
+
+    /* initialize result */
+#ifdef PARASAIL_TABLE
+    result = parasail_result_new_table1(s1Len, s2Len);
+#else
+#ifdef PARASAIL_ROWCOL
+    result = parasail_result_new_rowcol1(s1Len, s2Len);
+#else
+    result = parasail_result_new();
+#endif
+#endif
+    if (!result) return NULL;
+
+    /* set known flags */
+    result->flag |= PARASAIL_FLAG_NW | PARASAIL_FLAG_DIAG
+        | PARASAIL_FLAG_BITS_8 | PARASAIL_FLAG_LANES_32;
+#ifdef PARASAIL_TABLE
+    result->flag |= PARASAIL_FLAG_TABLE;
+#endif
+#ifdef PARASAIL_ROWCOL
+    result->flag |= PARASAIL_FLAG_ROWCOL;
+#endif
+
+    /* initialize heap variables */
+    s2B= parasail_memalign_int8_t(32, s2Len+PAD2);
+    _H_pr = parasail_memalign_int8_t(32, s2Len+PAD2);
+    _F_pr = parasail_memalign_int8_t(32, s2Len+PAD2);
+    s2 = s2B+PAD; /* will allow later for negative indices */
+    H_pr = _H_pr+PAD;
+    F_pr = _F_pr+PAD;
+
+    /* validate heap variables */
+    if (!s2B) return NULL;
+    if (!_H_pr) return NULL;
+    if (!_F_pr) return NULL;
 
     /* convert _s1 from char to int in range 0-23 */
-    for (i=0; i<s1Len; ++i) {
-        s1[i] = matrix->mapper[(unsigned char)_s1[i]];
-    }
-    /* pad back of s1 with dummy values */
-    for (i=s1Len; i<s1Len_PAD; ++i) {
-        s1[i] = 0; /* point to first matrix row because we don't care */
+    if (matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) {
+        s1 = parasail_memalign_int8_t(32, s1Len+PAD);
+        if (!s1) return NULL;
+        for (i=0; i<s1Len; ++i) {
+            s1[i] = matrix->mapper[(unsigned char)_s1[i]];
+        }
+        /* pad back of s1 with dummy values */
+        for (i=s1Len; i<s1Len_PAD; ++i) {
+            s1[i] = 0; /* point to first matrix row because we don't care */
+        }
     }
 
     /* convert _s2 from char to int in range 0-23 */
@@ -474,79 +554,79 @@ parasail_result_t* FNAME(
 
     /* set initial values for stored row */
     for (j=0; j<s2Len; ++j) {
-        tbl_pr[j] = -open - j*gap;
-        del_pr[j] = NEG_INF;
+        H_pr[j] = -open - j*gap;
+        F_pr[j] = NEG_LIMIT;
     }
     /* pad front of stored row values */
     for (j=-PAD; j<0; ++j) {
-        tbl_pr[j] = NEG_INF;
-        del_pr[j] = NEG_INF;
+        H_pr[j] = NEG_LIMIT;
+        F_pr[j] = NEG_LIMIT;
     }
     /* pad back of stored row values */
     for (j=s2Len; j<s2Len+PAD; ++j) {
-        tbl_pr[j] = NEG_INF;
-        del_pr[j] = NEG_INF;
+        H_pr[j] = NEG_LIMIT;
+        F_pr[j] = NEG_LIMIT;
     }
-    tbl_pr[-1] = 0; /* upper left corner */
+    H_pr[-1] = 0; /* upper left corner */
 
     /* iterate over query sequence */
     for (i=0; i<s1Len; i+=N) {
-        __m256i vNscore = vNegInf;
-        __m256i vWscore = vNegInf;
-        __m256i vIns = vNegInf;
-        __m256i vDel = vNegInf;
+        __m256i vNH = vNegInf;
+        __m256i vWH = vNegInf;
+        __m256i vE = vNegInf;
+        __m256i vF = vNegInf;
         __m256i vJ = vJreset;
-        const int * const restrict matrow0 = &matrix->matrix[matrix->size*s1[i+0]];
-        const int * const restrict matrow1 = &matrix->matrix[matrix->size*s1[i+1]];
-        const int * const restrict matrow2 = &matrix->matrix[matrix->size*s1[i+2]];
-        const int * const restrict matrow3 = &matrix->matrix[matrix->size*s1[i+3]];
-        const int * const restrict matrow4 = &matrix->matrix[matrix->size*s1[i+4]];
-        const int * const restrict matrow5 = &matrix->matrix[matrix->size*s1[i+5]];
-        const int * const restrict matrow6 = &matrix->matrix[matrix->size*s1[i+6]];
-        const int * const restrict matrow7 = &matrix->matrix[matrix->size*s1[i+7]];
-        const int * const restrict matrow8 = &matrix->matrix[matrix->size*s1[i+8]];
-        const int * const restrict matrow9 = &matrix->matrix[matrix->size*s1[i+9]];
-        const int * const restrict matrow10 = &matrix->matrix[matrix->size*s1[i+10]];
-        const int * const restrict matrow11 = &matrix->matrix[matrix->size*s1[i+11]];
-        const int * const restrict matrow12 = &matrix->matrix[matrix->size*s1[i+12]];
-        const int * const restrict matrow13 = &matrix->matrix[matrix->size*s1[i+13]];
-        const int * const restrict matrow14 = &matrix->matrix[matrix->size*s1[i+14]];
-        const int * const restrict matrow15 = &matrix->matrix[matrix->size*s1[i+15]];
-        const int * const restrict matrow16 = &matrix->matrix[matrix->size*s1[i+16]];
-        const int * const restrict matrow17 = &matrix->matrix[matrix->size*s1[i+17]];
-        const int * const restrict matrow18 = &matrix->matrix[matrix->size*s1[i+18]];
-        const int * const restrict matrow19 = &matrix->matrix[matrix->size*s1[i+19]];
-        const int * const restrict matrow20 = &matrix->matrix[matrix->size*s1[i+20]];
-        const int * const restrict matrow21 = &matrix->matrix[matrix->size*s1[i+21]];
-        const int * const restrict matrow22 = &matrix->matrix[matrix->size*s1[i+22]];
-        const int * const restrict matrow23 = &matrix->matrix[matrix->size*s1[i+23]];
-        const int * const restrict matrow24 = &matrix->matrix[matrix->size*s1[i+24]];
-        const int * const restrict matrow25 = &matrix->matrix[matrix->size*s1[i+25]];
-        const int * const restrict matrow26 = &matrix->matrix[matrix->size*s1[i+26]];
-        const int * const restrict matrow27 = &matrix->matrix[matrix->size*s1[i+27]];
-        const int * const restrict matrow28 = &matrix->matrix[matrix->size*s1[i+28]];
-        const int * const restrict matrow29 = &matrix->matrix[matrix->size*s1[i+29]];
-        const int * const restrict matrow30 = &matrix->matrix[matrix->size*s1[i+30]];
-        const int * const restrict matrow31 = &matrix->matrix[matrix->size*s1[i+31]];
-        vNscore = _mm256_srli_si256_rpl(vNscore, 1);
-        vNscore = _mm256_insert_epi8_rpl(vNscore, tbl_pr[-1], 31);
-        vWscore = _mm256_srli_si256_rpl(vWscore, 1);
-        vWscore = _mm256_insert_epi8_rpl(vWscore, -open - i*gap, 31);
-        tbl_pr[-1] = -open - (i+N)*gap;
+        const int * const restrict matrow0 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+0] : ((i+0 >= s1Len) ? s1Len-1 : i+0))];
+        const int * const restrict matrow1 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+1] : ((i+1 >= s1Len) ? s1Len-1 : i+1))];
+        const int * const restrict matrow2 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+2] : ((i+2 >= s1Len) ? s1Len-1 : i+2))];
+        const int * const restrict matrow3 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+3] : ((i+3 >= s1Len) ? s1Len-1 : i+3))];
+        const int * const restrict matrow4 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+4] : ((i+4 >= s1Len) ? s1Len-1 : i+4))];
+        const int * const restrict matrow5 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+5] : ((i+5 >= s1Len) ? s1Len-1 : i+5))];
+        const int * const restrict matrow6 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+6] : ((i+6 >= s1Len) ? s1Len-1 : i+6))];
+        const int * const restrict matrow7 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+7] : ((i+7 >= s1Len) ? s1Len-1 : i+7))];
+        const int * const restrict matrow8 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+8] : ((i+8 >= s1Len) ? s1Len-1 : i+8))];
+        const int * const restrict matrow9 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+9] : ((i+9 >= s1Len) ? s1Len-1 : i+9))];
+        const int * const restrict matrow10 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+10] : ((i+10 >= s1Len) ? s1Len-1 : i+10))];
+        const int * const restrict matrow11 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+11] : ((i+11 >= s1Len) ? s1Len-1 : i+11))];
+        const int * const restrict matrow12 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+12] : ((i+12 >= s1Len) ? s1Len-1 : i+12))];
+        const int * const restrict matrow13 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+13] : ((i+13 >= s1Len) ? s1Len-1 : i+13))];
+        const int * const restrict matrow14 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+14] : ((i+14 >= s1Len) ? s1Len-1 : i+14))];
+        const int * const restrict matrow15 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+15] : ((i+15 >= s1Len) ? s1Len-1 : i+15))];
+        const int * const restrict matrow16 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+16] : ((i+16 >= s1Len) ? s1Len-1 : i+16))];
+        const int * const restrict matrow17 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+17] : ((i+17 >= s1Len) ? s1Len-1 : i+17))];
+        const int * const restrict matrow18 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+18] : ((i+18 >= s1Len) ? s1Len-1 : i+18))];
+        const int * const restrict matrow19 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+19] : ((i+19 >= s1Len) ? s1Len-1 : i+19))];
+        const int * const restrict matrow20 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+20] : ((i+20 >= s1Len) ? s1Len-1 : i+20))];
+        const int * const restrict matrow21 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+21] : ((i+21 >= s1Len) ? s1Len-1 : i+21))];
+        const int * const restrict matrow22 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+22] : ((i+22 >= s1Len) ? s1Len-1 : i+22))];
+        const int * const restrict matrow23 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+23] : ((i+23 >= s1Len) ? s1Len-1 : i+23))];
+        const int * const restrict matrow24 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+24] : ((i+24 >= s1Len) ? s1Len-1 : i+24))];
+        const int * const restrict matrow25 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+25] : ((i+25 >= s1Len) ? s1Len-1 : i+25))];
+        const int * const restrict matrow26 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+26] : ((i+26 >= s1Len) ? s1Len-1 : i+26))];
+        const int * const restrict matrow27 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+27] : ((i+27 >= s1Len) ? s1Len-1 : i+27))];
+        const int * const restrict matrow28 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+28] : ((i+28 >= s1Len) ? s1Len-1 : i+28))];
+        const int * const restrict matrow29 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+29] : ((i+29 >= s1Len) ? s1Len-1 : i+29))];
+        const int * const restrict matrow30 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+30] : ((i+30 >= s1Len) ? s1Len-1 : i+30))];
+        const int * const restrict matrow31 = &matrix->matrix[matrix->size * ((matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) ? s1[i+31] : ((i+31 >= s1Len) ? s1Len-1 : i+31))];
+        vNH = _mm256_srli_si256_rpl(vNH, 1);
+        vNH = _mm256_insert_epi8_rpl(vNH, H_pr[-1], 31);
+        vWH = _mm256_srli_si256_rpl(vWH, 1);
+        vWH = _mm256_insert_epi8_rpl(vWH, -open - i*gap, 31);
+        H_pr[-1] = -open - (i+N)*gap;
         /* iterate over database sequence */
         for (j=0; j<s2Len+PAD; ++j) {
             __m256i vMat;
-            __m256i vNWscore = vNscore;
-            vNscore = _mm256_srli_si256_rpl(vWscore, 1);
-            vNscore = _mm256_insert_epi8_rpl(vNscore, tbl_pr[j], 31);
-            vDel = _mm256_srli_si256_rpl(vDel, 1);
-            vDel = _mm256_insert_epi8_rpl(vDel, del_pr[j], 31);
-            vDel = _mm256_max_epi8(
-                    _mm256_subs_epi8(vNscore, vOpen),
-                    _mm256_subs_epi8(vDel, vGap));
-            vIns = _mm256_max_epi8(
-                    _mm256_subs_epi8(vWscore, vOpen),
-                    _mm256_subs_epi8(vIns, vGap));
+            __m256i vNWH = vNH;
+            vNH = _mm256_srli_si256_rpl(vWH, 1);
+            vNH = _mm256_insert_epi8_rpl(vNH, H_pr[j], 31);
+            vF = _mm256_srli_si256_rpl(vF, 1);
+            vF = _mm256_insert_epi8_rpl(vF, F_pr[j], 31);
+            vF = _mm256_max_epi8(
+                    _mm256_subs_epi8(vNH, vOpen),
+                    _mm256_subs_epi8(vF, vGap));
+            vE = _mm256_max_epi8(
+                    _mm256_subs_epi8(vWH, vOpen),
+                    _mm256_subs_epi8(vE, vGap));
             vMat = _mm256_set_epi8(
                     matrow0[s2[j-0]],
                     matrow1[s2[j-1]],
@@ -581,37 +661,37 @@ parasail_result_t* FNAME(
                     matrow30[s2[j-30]],
                     matrow31[s2[j-31]]
                     );
-            vNWscore = _mm256_adds_epi8(vNWscore, vMat);
-            vWscore = _mm256_max_epi8(vNWscore, vIns);
-            vWscore = _mm256_max_epi8(vWscore, vDel);
+            vNWH = _mm256_adds_epi8(vNWH, vMat);
+            vWH = _mm256_max_epi8(vNWH, vE);
+            vWH = _mm256_max_epi8(vWH, vF);
             /* as minor diagonal vector passes across the j=-1 boundary,
              * assign the appropriate boundary conditions */
             {
                 __m256i cond = _mm256_cmpeq_epi8(vJ,vNegOne);
-                vWscore = _mm256_blendv_epi8(vWscore, vIBoundary, cond);
-                vDel = _mm256_blendv_epi8(vDel, vNegInf, cond);
-                vIns = _mm256_blendv_epi8(vIns, vNegInf, cond);
+                vWH = _mm256_blendv_epi8(vWH, vIBoundary, cond);
+                vF = _mm256_blendv_epi8(vF, vNegInf, cond);
+                vE = _mm256_blendv_epi8(vE, vNegInf, cond);
             }
-            /* check for saturation */
-            {
-                vSaturationCheckMax = _mm256_max_epi8(vSaturationCheckMax, vWscore);
-                vSaturationCheckMin = _mm256_min_epi8(vSaturationCheckMin, vWscore);
+            /* cannot start checking sat until after J clears boundary */
+            if (j > PAD) {
+                vSaturationCheckMin = _mm256_min_epi8(vSaturationCheckMin, vWH);
+                vSaturationCheckMax = _mm256_max_epi8(vSaturationCheckMax, vWH);
             }
 #ifdef PARASAIL_TABLE
-            arr_store_si256(result->score_table, vWscore, i, s1Len, j, s2Len);
+            arr_store_si256(result->tables->score_table, vWH, i, s1Len, j, s2Len);
 #endif
 #ifdef PARASAIL_ROWCOL
-            arr_store_rowcol(result->score_row, result->score_col, vWscore, i, s1Len, j, s2Len);
+            arr_store_rowcol(result->rowcols->score_row, result->rowcols->score_col, vWH, i, s1Len, j, s2Len);
 #endif
-            tbl_pr[j-31] = (int8_t)_mm256_extract_epi8_rpl(vWscore,0);
-            del_pr[j-31] = (int8_t)_mm256_extract_epi8_rpl(vDel,0);
+            H_pr[j-31] = (int8_t)_mm256_extract_epi8_rpl(vWH,0);
+            F_pr[j-31] = (int8_t)_mm256_extract_epi8_rpl(vF,0);
             /* as minor diagonal vector passes across table, extract
                last table value at the i,j bound */
             {
                 __m256i cond_valid_I = _mm256_cmpeq_epi8(vI, vILimit1);
                 __m256i cond_valid_J = _mm256_cmpeq_epi8(vJ, vJLimit1);
                 __m256i cond_all = _mm256_and_si256(cond_valid_I, cond_valid_J);
-                vMax = _mm256_blendv_epi8(vMax, vWscore, cond_all);
+                vMax = _mm256_blendv_epi8(vMax, vWH, cond_all);
             }
             vJ = _mm256_adds_epi8(vJ, vOne);
         }
@@ -630,10 +710,10 @@ parasail_result_t* FNAME(
     }
 
     if (_mm256_movemask_epi8(_mm256_or_si256(
-            _mm256_cmpeq_epi8(vSaturationCheckMin, vNegLimit),
-            _mm256_cmpeq_epi8(vSaturationCheckMax, vPosLimit)))) {
-        result->saturated = 1;
-        score = INT8_MAX;
+            _mm256_cmplt_epi8_rpl(vSaturationCheckMin, vNegLimit),
+            _mm256_cmpgt_epi8(vSaturationCheckMax, vPosLimit)))) {
+        result->flag |= PARASAIL_FLAG_SATURATED;
+        score = 0;
         end_query = 0;
         end_ref = 0;
     }
@@ -642,10 +722,12 @@ parasail_result_t* FNAME(
     result->end_query = end_query;
     result->end_ref = end_ref;
 
-    parasail_free(_del_pr);
-    parasail_free(_tbl_pr);
+    parasail_free(_F_pr);
+    parasail_free(_H_pr);
     parasail_free(s2B);
-    parasail_free(s1);
+    if (matrix->type == PARASAIL_MATRIX_TYPE_SQUARE) {
+        parasail_free(s1);
+    }
 
     return result;
 }

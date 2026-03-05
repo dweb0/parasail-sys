@@ -1,7 +1,7 @@
 /**
  * @file
  *
- * @author jeff.daily@pnnl.gov
+ * @author jeffrey.daily@gmail.com
  *
  * Copyright (c) 2015 Battelle Memorial Institute.
  *
@@ -64,7 +64,11 @@ static const parasail_matrix_t parasail_pam450 = {
     24,
     30,
     -9,
-    0
+    NULL,
+    PARASAIL_MATRIX_TYPE_SQUARE,
+    24,
+    "ARNDCQEGHILKMFPSTWYVBZX*",
+    NULL
 };
 
 #ifdef __cplusplus
