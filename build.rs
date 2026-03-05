@@ -6,47 +6,28 @@
 use std::env;
 use std::fs::copy;
 use std::path::Path;
-use std::process::Command;
 
 fn main() {
+    println!("cargo:rerun-if-changed=parasail_c/CMakeLists.txt");
+
     let out_dir = env::var("OUT_DIR").unwrap();
-    let num_jobs = env::var("NUM_JOBS").unwrap();
     let c_src_path = Path::new("parasail_c");
 
-    // configure the build
-    Command::new("./configure")
-        .arg("--enable-shared")
-        .arg("--with-pic")
-        .current_dir(&c_src_path)
-        .output()
-        .expect("Failed to configure parasail.");
+    let mut config = cmake::Config::new(&c_src_path);
 
-    // build the library
-    Command::new("make")
-        .arg(format!("-j{}", num_jobs))
-        .current_dir(&c_src_path)
-        .output()
-        .expect("Failed to build parasail.");
+    // Ensure static lib and bypass cmake error 
+    // "Compatibility with CMake < 3.5 has been removed from CMake."
+    config
+        .define("BUILD_SHARED_LIBS", "OFF")
+        .define("CMAKE_POLICY_VERSION_MINIMUM", "3.5");
 
-    // put the static library in the right directory so we can clean up
+    let dst = config.build();
+
+    let lib_file = dst.join("lib/libparasail.a");
     let target_file = format!("{}/libparasail.a", out_dir);
-    copy("parasail_c/.libs/libparasail.a", target_file)
+    copy(lib_file, target_file)
         .expect("Problem copying library to target directoy.");
-
-    // clean up the temporary build files
-    Command::new("make")
-        .current_dir(&c_src_path)
-        .arg("clean")
-        .output()
-        .expect("Failed to clean up build files.");
-
-    // clean up the configuration files
-    Command::new("make")
-        .arg("distclean")
-        .current_dir(&c_src_path)
-        .output()
-        .expect("Failed to clean up configuration files.");
-
+    
     // let cargo know that it can find the file in the out directory
     println!("cargo:rustc-link-search=native={}", out_dir);
     println!("cargo:rustc-link-lib=static=parasail");
